@@ -58,7 +58,7 @@ if __name__=="__main__":
     max_num_steps = 50
     num_epochs = 10
 
-    mode = Mode.RANDOM
+    mode = Mode.MANUAL
 
     for _ in range(num_epochs):
         # Create environment:
