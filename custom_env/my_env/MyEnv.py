@@ -7,18 +7,18 @@ import gymnasium as gym
 from .Direction import Direction, Action
 from collections import defaultdict
 
+BONUS = 3
+STEP = -0.01
+DANGER = -20
+GOAL = 10   
+
 # ORDER OF COORDINATES: (X, Y); Y IS REVERTED!!!
 
 # Custom Environment:
 # -------------------
-class MyEnv(gym.Env):        
-
+class MyEnv(gym.Env):
     def __init__(self, grid_width, grid_height, goal) -> None:
         super().__init__()
-
-# move costs to configs
-
-# add bonuses
 
 # add jumps
         self.state = None
@@ -117,14 +117,14 @@ class MyEnv(gym.Env):
     def perform_checks(self):
         if self.perform_goal_check():
             self.done = True
-            self.reward = 10
+            self.reward = GOAL
         elif self.perform_danger_check():
             self.done = True
-            self.reward = -20
+            self.reward = DANGER
         elif self.perform_bonus_check():
-            self.reward = 3
+            self.reward = BONUS
         else:
-            self.reward = -0.01
+            self.reward = STEP
 
 
     def step(self, input):
