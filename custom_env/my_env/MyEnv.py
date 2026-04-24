@@ -37,6 +37,7 @@ class MyEnv(gym.Env):
         )
 
         self.danger_states = []
+        self.bonus_states = []
         self.walls = defaultdict(set)
 
         # Display:
@@ -58,6 +59,9 @@ class MyEnv(gym.Env):
     
     def add_danger(self, coordinates):
         self.danger_states.append(np.array(coordinates))
+
+    def add_bonus(self, coordinates):
+        self.bonus_states.append(np.array(coordinates))
 
     def add_wall(self, coordinates, direction: Direction):
         coord = tuple(coordinates)
@@ -106,6 +110,9 @@ class MyEnv(gym.Env):
     
     def perform_danger_check(self):
         return any(np.array_equal(self.state, d) for d in self.danger_states)
+    
+    def perform_bonus_check(self):
+        return any(np.array_equal(self.state, d) for d in self.bonus_states)
 
     def perform_checks(self):
         if self.perform_goal_check():
@@ -114,6 +121,8 @@ class MyEnv(gym.Env):
         elif self.perform_danger_check():
             self.done = True
             self.reward = -20
+        elif self.perform_bonus_check():
+            self.reward = 3
         else:
             self.reward = -0.01
 
@@ -180,6 +189,16 @@ class MyEnv(gym.Env):
             pygame.draw.rect(self.screen,
                             (240,128,128),
                             danger)
+            
+        # add bonuses
+        for each_bonus in self.bonus_states:
+            bonus = pygame.Rect(each_bonus[0]*self.cell_size,
+                        each_bonus[1]*self.cell_size,
+                        self.cell_size,
+                        self.cell_size)
+            pygame.draw.rect(self.screen,
+                            (243,218,88),
+                            bonus)
             
         # add walls:
         for coord, directions in self.walls.items():

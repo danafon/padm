@@ -11,6 +11,9 @@ def initiate_env():
     env.add_danger(coordinates=(9,3))
     env.add_danger(coordinates=(5,4))
 
+    env.add_bonus(coordinates=(1,0))
+    env.add_bonus(coordinates=(6,2))
+
     env.add_wall(coordinates=[0,2], direction=Direction.RIGHT)
 
     env.add_wall(coordinates=[3,0], direction=Direction.RIGHT)
