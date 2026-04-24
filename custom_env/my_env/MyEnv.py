@@ -9,6 +9,7 @@ from collections import defaultdict
 
 BONUS = 3
 STEP = -0.01
+CLIMB = -1
 DANGER = -20
 GOAL = 10   
 
@@ -89,7 +90,7 @@ class MyEnv(gym.Env):
         ):
             return np.array([0, 0])
         
-        if consider_walls:
+        if consider_walls and action != Action.CLIMB:
             if direction in self.walls.get(tuple(state), set()):
                 return np.array([0, 0])
         
@@ -102,8 +103,6 @@ class MyEnv(gym.Env):
                 return np.array([-1, 0])
             case Direction.RIGHT:
                 return np.array([1, 0])
-            case _:
-                return np.array([0, 0])
 
     def perform_goal_check(self):
         return np.array_equal(self.state, self.goal)
@@ -114,7 +113,9 @@ class MyEnv(gym.Env):
     def perform_bonus_check(self):
         return any(np.array_equal(self.state, d) for d in self.bonus_states)
 
-    def perform_checks(self):
+    def perform_checks(self, action: Action):
+        action_cost = STEP if action == Action.MOVE else CLIMB
+
         if self.perform_goal_check():
             self.done = True
             self.reward = GOAL
@@ -122,9 +123,9 @@ class MyEnv(gym.Env):
             self.done = True
             self.reward = DANGER
         elif self.perform_bonus_check():
-            self.reward = BONUS
+            self.reward = BONUS + action_cost
         else:
-            self.reward = STEP
+            self.reward = action_cost
 
 
     def step(self, input):
@@ -137,7 +138,7 @@ class MyEnv(gym.Env):
         # Check special rules, change reward:
         # ------------------
         # Goal:
-        self.perform_checks()
+        self.perform_checks(action)
 
         # Info:
         # -----

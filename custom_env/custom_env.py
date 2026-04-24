@@ -44,10 +44,9 @@ class Mode(Enum):
 def get_action(mode):
     match mode:
         case Mode.MANUAL:
-            dirr = None
-            while dirr is None:
-                dirr = get_direction()
-            action = [0, dirr]
+            action = None
+            while action is None:
+                action = get_direction()
         case Mode.RANDOM:
             action = env.action_space.sample()
 

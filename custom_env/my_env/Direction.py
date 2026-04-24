@@ -19,3 +19,4 @@ class Direction(Enum):
 
 class Action(Enum):
     MOVE = 0
+    CLIMB = 1
