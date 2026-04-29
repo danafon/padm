@@ -18,7 +18,7 @@ GOAL = 10
 # Custom Environment:
 # -------------------
 class MyEnv(gym.Env):
-    def __init__(self, grid_width, grid_height, goal) -> None:
+    def __init__(self, grid_width, grid_height, goal, flattened_input = False) -> None:
         super().__init__()
 
 # add jumps
@@ -30,7 +30,8 @@ class MyEnv(gym.Env):
         self.grid_width = grid_width
         self.grid_height = grid_height
         self.goal = goal
-        self.action_space = gym.spaces.MultiDiscrete((1, 4))
+
+        self.action_space = gym.spaces.Discrete(8) if flattened_input else gym.spaces.MultiDiscrete((2, 4))
         self.observation_space = gym.spaces.Box(
             low=np.array([0, 0], dtype=np.int32),
             high=np.array([self.grid_width - 1, self.grid_height - 1], dtype=np.int32),
@@ -129,8 +130,13 @@ class MyEnv(gym.Env):
 
 
     def step(self, input):
-        action = Action(input[0])
-        direction = Direction(input[1])
+        i = input
+        if isinstance(input, (int, np.integer)):
+            action = Action(input // 4)
+            direction = Direction(input % 4)
+        else:
+            action = Action(input[0])
+            direction = Direction(input[1])
 
         step = self.basic_step(action=action, direction=direction, consider_walls=True)
         self.state = np.add(self.state, step)

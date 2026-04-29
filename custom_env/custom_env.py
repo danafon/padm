@@ -2,10 +2,17 @@ from my_env.MyEnv import MyEnv
 import numpy as np
 from my_env.Direction import Direction
 from my_env.Keyboard import get_direction
-from enum import Enum
+from my_env.Config import InputFormat, InputMode, Difficulty
 
-def initiate_env():
-    env = MyEnv(grid_width=12, grid_height=5, goal=np.array([10, 2]))
+def initiate_env(input_format, no_walls):
+    flattened_input = input_format==InputFormat.FLAT
+
+    env = MyEnv(
+        grid_width=12,
+        grid_height=5,
+        goal=np.array([10, 2]),
+        flattened_input = flattened_input
+        )
 
     env.add_danger(coordinates=(9,2))
     env.add_danger(coordinates=(9,3))
@@ -13,6 +20,9 @@ def initiate_env():
 
     env.add_bonus(coordinates=(1,0))
     env.add_bonus(coordinates=(6,2))
+
+    if no_walls:
+        return env
 
     env.add_wall(coordinates=[0,2], direction=Direction.RIGHT)
 
@@ -36,18 +46,13 @@ def initiate_env():
 
     return env
 
-
-class Mode(Enum):
-    MANUAL = 0
-    RANDOM = 1
-
-def get_action(mode):
+def get_action(mode, format):
     match mode:
-        case Mode.MANUAL:
+        case InputMode.MANUAL:
             action = None
             while action is None:
-                action = get_direction()
-        case Mode.RANDOM:
+                action = get_direction(format)
+        case InputMode.RANDOM:
             action = env.action_space.sample()
 
     return action
@@ -60,12 +65,15 @@ if __name__=="__main__":
     max_num_steps = 50
     num_epochs = 10
 
-    mode = Mode.MANUAL
+    input_mode = InputMode.MANUAL
+    difficulty = Difficulty.HARD
+
+    input_format, no_walls = difficulty.get_config()
 
     for _ in range(num_epochs):
         # Create environment:
         # -------------------
-        env = initiate_env()
+        env = initiate_env(input_format, no_walls)
 
         state, info = env.reset()
 
@@ -73,7 +81,8 @@ if __name__=="__main__":
 
         for _ in range(max_num_steps):
 
-            next_step, done, reward, info = env.step(get_action(mode))            
+            action = get_action(input_mode, input_format)
+            next_step, done, reward, info = env.step(action)            
 
             env.render()
 
