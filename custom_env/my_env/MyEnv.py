@@ -42,8 +42,8 @@ class MyEnv(gym.Env):
         )
 
         self.danger_states = []
-        self.bonus_states = []
         self.walls = defaultdict(set)
+        self.bonuses = defaultdict(set)
 
         # Display:
         # --------
@@ -55,10 +55,7 @@ class MyEnv(gym.Env):
 
     def reset(self):
         if self.random_initialization:
-            banned = {
-                tuple(pos)
-                for pos in self.bonus_states + self.danger_states
-            }
+            banned = {tuple(pos) for pos in self.danger_states} | set(self.bonuses.keys())
             valid_positions = [
                 (w, h)
                 for h in range(self.grid_height)
@@ -70,6 +67,8 @@ class MyEnv(gym.Env):
             self.state = np.array([0,2])
         self.done = False
         self.reward = 0
+        for key in self.bonuses:
+            self.bonuses[key] = True
 
         self.distance_to_goal()
 
@@ -79,7 +78,8 @@ class MyEnv(gym.Env):
         self.danger_states.append(np.array(coordinates))
 
     def add_bonus(self, coordinates):
-        self.bonus_states.append(np.array(coordinates))
+        coord = tuple(coordinates)
+        self.bonuses[coord].add(True)
 
     def add_wall(self, coordinates, direction: Direction):
         coord = tuple(coordinates)
@@ -128,7 +128,11 @@ class MyEnv(gym.Env):
         return any(np.array_equal(self.state, d) for d in self.danger_states)
     
     def perform_bonus_check(self):
-        return any(np.array_equal(self.state, d) for d in self.bonus_states)
+        state = tuple(self.state)
+        active_bonus = self.bonuses.get(state, False)
+        if active_bonus:
+            self.bonuses[state] = False
+        return active_bonus
 
     def perform_checks(self, action: Action):
         action_cost = STEP if action == Action.MOVE else CLIMB
@@ -146,7 +150,6 @@ class MyEnv(gym.Env):
 
 
     def step(self, input):
-        i = input
         if isinstance(input, (int, np.integer)):
             action = Action(input // 4)
             direction = Direction(input % 4)
@@ -214,13 +217,13 @@ class MyEnv(gym.Env):
                             danger)
             
         # add bonuses
-        for each_bonus in self.bonus_states:
+        for each_bonus, active in self.bonuses.items():
             bonus = pygame.Rect(each_bonus[0]*self.cell_size,
                         each_bonus[1]*self.cell_size,
                         self.cell_size,
                         self.cell_size)
             pygame.draw.rect(self.screen,
-                            (243,218,88),
+                            (243,218,88) if active else (168,162,111),
                             bonus)
             
         # add walls:
