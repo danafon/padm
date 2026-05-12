@@ -7,6 +7,7 @@ import numpy as np
 import gymnasium as gym
 from .Direction import Direction, Action
 from collections import defaultdict
+from .Config import InputFormat
 
 BONUS = 3
 STEP = -0.01
@@ -263,3 +264,34 @@ class MyEnv(gym.Env):
     # ---------
     def close(self):
         pygame.quit()
+
+def initiate_env(input_format,
+                 no_walls,
+                 goal_coordinates=None,
+                 dangers=None,
+                 bonuses=None,
+                 walls=None,
+                 random_initialization=None):
+    flattened_input = input_format==InputFormat.FLAT
+
+    env = MyEnv(
+        grid_width=12,
+        grid_height=5,
+        goal=np.array(goal_coordinates),
+        flattened_input = flattened_input,
+        random_initialization=random_initialization,
+        )
+
+    for danger in dangers:
+        env.add_danger(coordinates=danger)
+
+    for bonus in bonuses:
+        env.add_bonus(coordinates=bonus)
+
+    if no_walls:
+        return env
+
+    for wall, dir in walls:
+        env.add_wall(coordinates=wall, direction=dir)
+
+    return env

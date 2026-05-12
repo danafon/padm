@@ -1,51 +1,8 @@
-from my_env.MyEnv import MyEnv
+from my_env.MyEnv import initiate_env
 import numpy as np
 from my_env.Direction import Direction
 from my_env.Keyboard import get_direction
-from my_env.Config import InputFormat, InputMode, Difficulty
-
-def initiate_env(input_format, no_walls):
-    flattened_input = input_format==InputFormat.FLAT
-
-    env = MyEnv(
-        grid_width=12,
-        grid_height=5,
-        goal=np.array([10, 2]),
-        flattened_input = flattened_input,
-        random_initialization=True,
-        )
-
-    env.add_danger(coordinates=(9,2))
-    env.add_danger(coordinates=(9,3))
-    env.add_danger(coordinates=(5,4))
-
-    env.add_bonus(coordinates=(1,0))
-    env.add_bonus(coordinates=(6,2))
-
-    if no_walls:
-        return env
-
-    env.add_wall(coordinates=[0,2], direction=Direction.RIGHT)
-
-    env.add_wall(coordinates=[3,0], direction=Direction.RIGHT)
-    env.add_wall(coordinates=[3,1], direction=Direction.RIGHT)
-    env.add_wall(coordinates=[3,2], direction=Direction.RIGHT)
-    env.add_wall(coordinates=[3,3], direction=Direction.RIGHT)
-
-    env.add_wall(coordinates=[4,1], direction=Direction.RIGHT)
-    env.add_wall(coordinates=[4,2], direction=Direction.RIGHT)
-    env.add_wall(coordinates=[4,3], direction=Direction.RIGHT)
-
-    env.add_wall(coordinates=[5,1], direction=Direction.RIGHT)
-    env.add_wall(coordinates=[5,2], direction=Direction.RIGHT)
-
-    env.add_wall(coordinates=[6,0], direction=Direction.RIGHT)
-    env.add_wall(coordinates=[6,1], direction=Direction.RIGHT)
-    env.add_wall(coordinates=[6,2], direction=Direction.RIGHT)
-    
-    env.add_wall(coordinates=[6,2], direction=Direction.DOWN)
-
-    return env
+from my_env.Config import InputMode, Difficulty
 
 def get_action(mode, format):
     match mode:
@@ -71,11 +28,41 @@ if __name__=="__main__":
 
     input_format, no_walls = difficulty.get_config()
 
+    random_initialization = True
+    goal_coordinates = (10, 2)
+    random_initialization = True
+    dangers = ((9,2), (9,3), (5,4))
+    bonuses = ((1,0), (6,2))
+    walls = (
+        ([0,2], Direction.RIGHT),
+        ([3,0], Direction.RIGHT),
+        ([3,1], Direction.RIGHT),
+        ([3,2], Direction.RIGHT),
+        ([3,3], Direction.RIGHT),
+        ([4,1], Direction.RIGHT),
+        ([4,2], Direction.RIGHT),
+        ([4,3], Direction.RIGHT),
+        ([5,1], Direction.RIGHT),
+        ([5,2], Direction.RIGHT),
+        ([6,0], Direction.RIGHT),
+        ([6,1], Direction.RIGHT),
+        ([6,2], Direction.RIGHT),
+        ([6,2], Direction.DOWN),
+    )
+
     for _ in range(num_epochs):
         # Create environment:
         # -------------------
-        env = initiate_env(input_format, no_walls)
 
+        env = initiate_env(
+            input_format,
+            no_walls,
+            goal_coordinates=goal_coordinates,
+            dangers=dangers,
+            bonuses=bonuses,
+            walls=walls,
+            random_initialization=random_initialization
+        )
         state, info = env.reset()
 
         print("Initial_state: ", state, "Distance to goal: ", info["Distance to goal"])
