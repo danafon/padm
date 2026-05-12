@@ -11,7 +11,8 @@ def initiate_env(input_format, no_walls):
         grid_width=12,
         grid_height=5,
         goal=np.array([10, 2]),
-        flattened_input = flattened_input
+        flattened_input = flattened_input,
+        random_initialization=True,
         )
 
     env.add_danger(coordinates=(9,2))

@@ -2,6 +2,7 @@
 # --------
 import sys
 import pygame
+import random
 import numpy as np
 import gymnasium as gym
 from .Direction import Direction, Action
@@ -18,7 +19,7 @@ GOAL = 10
 # Custom Environment:
 # -------------------
 class MyEnv(gym.Env):
-    def __init__(self, grid_width, grid_height, goal, flattened_input = False) -> None:
+    def __init__(self, grid_width, grid_height, goal, flattened_input=False, random_initialization=False) -> None:
         super().__init__()
 
 # add jumps
@@ -30,6 +31,7 @@ class MyEnv(gym.Env):
         self.grid_width = grid_width
         self.grid_height = grid_height
         self.goal = goal
+        self.random_initialization = random_initialization
 
         self.action_space = gym.spaces.Discrete(8) if flattened_input else gym.spaces.MultiDiscrete((2, 4))
         self.observation_space = gym.spaces.Box(
@@ -51,7 +53,20 @@ class MyEnv(gym.Env):
     # ---------
 
     def reset(self):
-        self.state = np.array([0,2])
+        if self.random_initialization:
+            banned = {
+                tuple(pos)
+                for pos in self.bonus_states + self.danger_states
+            }
+            valid_positions = [
+                (w, h)
+                for h in range(self.grid_height)
+                for w in range(self.grid_width)
+                if (w, h) not in banned
+            ]
+            self.state = np.array(random.choice(valid_positions))
+        else:
+            self.state = np.array([0,2])
         self.done = False
         self.reward = 0
 
