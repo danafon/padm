@@ -5,9 +5,9 @@ import pygame
 import random
 import numpy as np
 import gymnasium as gym
-from .Direction import Direction, Action
+from engine.Direction import Direction, Action
 from collections import defaultdict
-from .Config import InputFormat
+from engine.Config import InputFormat
 
 BONUS = 3
 STEP = -0.01
