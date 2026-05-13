@@ -1,5 +1,5 @@
 import pygame
-from my_env.Config import InputFormat
+from engine.Config import InputFormat
 
 def format_output(format, res):
     if format == InputFormat.TWO_D:
