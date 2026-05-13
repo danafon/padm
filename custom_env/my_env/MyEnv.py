@@ -55,7 +55,7 @@ class MyEnv(gym.Env):
 
     def reset(self):
         if self.random_initialization:
-            banned = {tuple(pos) for pos in self.danger_states} | set(self.bonuses.keys())
+            banned = {tuple(pos) for pos in self.danger_states} | set(self.bonuses.keys()) | set(self.goal)
             valid_positions = [
                 (w, h)
                 for h in range(self.grid_height)
@@ -270,11 +270,11 @@ class MyEnv(gym.Env):
 
 def initiate_env(input_format,
                  no_walls,
-                 goal_coordinates=None,
-                 dangers=None,
-                 bonuses=None,
-                 walls=None,
-                 random_initialization=None):
+                 goal_coordinates,
+                 dangers,
+                 bonuses,
+                 walls,
+                 random_initialization):
     flattened_input = input_format==InputFormat.FLAT
 
     env = MyEnv(
@@ -283,7 +283,7 @@ def initiate_env(input_format,
         goal=np.array(goal_coordinates),
         flattened_input = flattened_input,
         random_initialization=random_initialization,
-        )
+    )
 
     for danger in dangers:
         env.add_danger(coordinates=danger)
