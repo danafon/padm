@@ -1,8 +1,7 @@
-from my_env.MyEnv import initiate_env
-import numpy as np
-from my_env.Direction import Direction
-from my_env.Keyboard import get_direction
-from my_env.Config import InputMode, Difficulty
+from engine.MyEnv import initiate_env
+from engine.Direction import Direction
+from engine.Keyboard import get_direction
+from engine.Config import InputMode, Difficulty
 
 def get_action(mode, format):
     match mode:
