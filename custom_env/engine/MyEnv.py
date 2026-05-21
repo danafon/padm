@@ -11,7 +11,7 @@ from engine.Config import InputFormat
 
 BONUS = 3
 STEP = -0.01
-CLIMB = -1
+CLIMB = -0.1
 DANGER = -20
 GOAL = 10   
 
