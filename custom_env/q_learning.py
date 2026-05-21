@@ -133,9 +133,9 @@ def visualize_q_table(danger_state_coordinates,
                         ha='center', va='center', weight='bold', fontsize=14)
 
             # display walls
-            # for coord, direct in wall_coordinates:
-            #     cs, rs = direct.to_coords(coord)
-            #     ax.plot(cs, rs, color='black', linewidth=3)
+            for coord, direct in wall_coordinates:
+                cs, rs = direct.to_coords(coord)
+                ax.plot(cs, rs, color='black', linewidth=3)
 
             ax.set_title(f'Action: {action}')
             ax.set_xlabel('Column')
@@ -180,6 +180,9 @@ def visualize_q_table(danger_state_coordinates,
                     ax.text(col + 0.5, row + 0.25, action_arrows[best_actions[row, col]], color='white',
                             ha='center', va='center', weight='bold', fontsize=18)
 
+        for coord, direct in wall_coordinates:
+            cs, rs = direct.to_coords(coord)
+            ax.plot(cs, rs, color='black', linewidth=3)
         ax.set_title('Learned Greedy Policy and Max Q-value')
         ax.set_xlabel('Column')
         ax.set_ylabel('Row')
