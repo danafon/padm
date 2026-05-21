@@ -9,7 +9,7 @@ from engine.Direction import Direction, Action
 from collections import defaultdict
 from engine.Config import InputFormat
 
-BONUS = 3
+BONUS = 1
 STEP = -0.01
 CLIMB = -0.1
 DANGER = -20

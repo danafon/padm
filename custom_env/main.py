@@ -7,7 +7,7 @@ from engine.Config import InputMode, Difficulty
 
 # User definitions:
 # -----------------
-train = False
+train = True
 visualize_results = True
 render = False
 
@@ -33,7 +33,7 @@ random_initialization = True
 goal_coordinates = (10, 2)
 random_initialization = True
 dangers = ((9,2), (9,3), (5,4))
-bonuses = () # ((1,0), (6,2))
+bonuses = ((1,0), (6,2))
 walls = (
     ([0,2], Direction.RIGHT),
     ([3,0], Direction.RIGHT),
@@ -84,4 +84,5 @@ if visualize_results:
     visualize_q_table(danger_state_coordinates=dangers,
                       goal_coordinates=goal_coordinates,
                       wall_coordinates=walls,
+                      bonus_coordinates=bonuses,
                       q_values_path="q_table.npy")

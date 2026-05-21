@@ -3,6 +3,7 @@
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 
 
 # Function 1: Train Q-learning agent
@@ -86,7 +87,8 @@ def visualize_q_table(danger_state_coordinates,
                       goal_coordinates,
                       actions=["Up", "Down", "Right", "Left", "Jump Up", "Jump Down", "Jump Right", "Jump Left"],
                       q_values_path="q_table.npy",
-                      wall_coordinates=None
+                      wall_coordinates=None,
+                      bonus_coordinates=(),
                       ):
 
     # Load the Q-table:
@@ -135,7 +137,17 @@ def visualize_q_table(danger_state_coordinates,
             # display walls
             for coord, direct in wall_coordinates:
                 cs, rs = direct.to_coords(coord)
-                ax.plot(cs, rs, color='black', linewidth=3)
+                ax.plot(cs, rs, color='brown', linewidth=3)
+
+            for each_bonus in bonus_coordinates:
+                rect = patches.Rectangle(
+                    each_bonus,      # (x, y)
+                    1, 1,            # width, height
+                    fill=False,
+                    edgecolor="red",
+                    linewidth=2
+                )
+                ax.add_patch(rect)
 
             ax.set_title(f'Action: {action}')
             ax.set_xlabel('Column')
@@ -182,7 +194,18 @@ def visualize_q_table(danger_state_coordinates,
 
         for coord, direct in wall_coordinates:
             cs, rs = direct.to_coords(coord)
-            ax.plot(cs, rs, color='black', linewidth=3)
+            ax.plot(cs, rs, color='brown', linewidth=3)
+
+        for each_bonus in bonus_coordinates:
+            rect = patches.Rectangle(
+                each_bonus,      # (x, y)
+                1, 1,            # width, height
+                fill=False,
+                edgecolor="red",
+                linewidth=2
+            )
+            ax.add_patch(rect)
+        
         ax.set_title('Learned Greedy Policy and Max Q-value')
         ax.set_xlabel('Column')
         ax.set_ylabel('Row')
