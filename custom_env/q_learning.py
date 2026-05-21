@@ -43,7 +43,7 @@ def train_q_learning(env,
             else:
                 action = np.argmax(q_table[state])  # Exploit
 
-            next_state, reward, done, _ = env.step(action)
+            next_state, done, reward, _ = env.step(action)
             
             if render:
                 env.render()
@@ -82,8 +82,8 @@ def train_q_learning(env,
 
 # Function 2: Visualize the Q-table
 # -----------
-def visualize_q_table(danger_state_coordinates=[(2, 1), (0, 4)],
-                      goal_coordinates=(4, 4),
+def visualize_q_table(danger_state_coordinates,
+                      goal_coordinates,
                       actions=["Up", "Down", "Right", "Left", "Jump Up", "Jump Down", "Jump Right", "Jump Left"],
                       q_values_path="q_table.npy",
                       wall_coordinates=None
@@ -112,12 +112,12 @@ def visualize_q_table(danger_state_coordinates=[(2, 1), (0, 4)],
         _, axes = plt.subplots(2, 4, figsize=(20, 5))
 
         for i, action in enumerate(actions):
-            ax = axes[i // 2][i % 4]
-            heatmap_data = q_table[:, :, i].copy()
+            ax = axes[i // 4][i % 4]
+            heatmap_data = q_table[:, :, i].T.copy()
 
             # Mask the goal state's Q-value for visualization:
             # ------------------------------------------------
-            mask = terminal_state_mask.copy()
+            mask = terminal_state_mask.T.copy()
 
             sns.heatmap(heatmap_data, annot=True, fmt=".2f", cmap="viridis",
                         ax=ax, cbar=False, mask=mask, annot_kws={"size": 9},
@@ -125,17 +125,17 @@ def visualize_q_table(danger_state_coordinates=[(2, 1), (0, 4)],
 
             # Denote Goal and danger states:
             # ----------------------------
-            ax.text(goal_coordinates[1] + 0.5, goal_coordinates[0] + 0.5, 'G', color='green',
+            ax.text(goal_coordinates[0] + 0.5, goal_coordinates[1] + 0.5, 'G', color='green',
                     ha='center', va='center', weight='bold', fontsize=14)
 
             for danger_index, each_danger in enumerate(danger_state_coordinates, start=1):
-                ax.text(each_danger[1] + 0.5, each_danger[0] + 0.5, f'D{danger_index}', color='red',
+                ax.text(each_danger[0] + 0.5, each_danger[1] + 0.5, f'D{danger_index}', color='red',
                         ha='center', va='center', weight='bold', fontsize=14)
 
             # display walls
-            for coord, direct in wall_coordinates:
-                cs, rs = direct.to_coords(coord)
-                ax.plot(cs, rs, color='black', linewidth=3)
+            # for coord, direct in wall_coordinates:
+            #     cs, rs = direct.to_coords(coord)
+            #     ax.plot(cs, rs, color='black', linewidth=3)
 
             ax.set_title(f'Action: {action}')
             ax.set_xlabel('Column')
@@ -146,8 +146,8 @@ def visualize_q_table(danger_state_coordinates=[(2, 1), (0, 4)],
 
         # Visualize the learned greedy policy:
         # ------------------------------------
-        best_actions = np.argmax(q_table, axis=2)
-        best_q_values = np.max(q_table, axis=2)
+        best_actions = np.argmax(q_table, axis=2).T
+        best_q_values = np.max(q_table, axis=2).T
         action_arrows = {
             0: "↑",  # Up
             1: "↓",  # Down
@@ -162,12 +162,12 @@ def visualize_q_table(danger_state_coordinates=[(2, 1), (0, 4)],
         _, ax = plt.subplots(figsize=(7, 6))
 
         sns.heatmap(best_q_values, annot=True, fmt=".2f", cmap="viridis",
-                    ax=ax, cbar=True, mask=terminal_state_mask,
+                    ax=ax, cbar=True, mask=terminal_state_mask.T,
                     annot_kws={"size": 9}, linewidths=0.5, linecolor="white")
 
-        for row in range(q_table.shape[0]):
-            for col in range(q_table.shape[1]):
-                current_state = (row, col)
+        for row in range(q_table.shape[1]):
+            for col in range(q_table.shape[0]):
+                current_state = (col, row)
 
                 if current_state == goal_coordinates:
                     ax.text(col + 0.5, row + 0.5, 'G', color='green',
