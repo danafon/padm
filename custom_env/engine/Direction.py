@@ -16,6 +16,21 @@ class Direction(Enum):
                 return Direction.RIGHT
             case Direction.RIGHT:
                 return Direction.LEFT
+    
+    # returns col, row
+    def to_coords(self, coords):
+        c = coords[0]
+        r = coords[1]
+
+        match self:
+            case Direction.UP:
+                return [c, c + 1], [r, r]
+            case Direction.DOWN:
+                return [c, c + 1], [r + 1, r + 1]
+            case Direction.LEFT:
+                return [c, c], [r, r + 1]
+            case Direction.RIGHT:
+                return [c + 1, c + 1], [r, r + 1]
 
 class Action(Enum):
     MOVE = 0

@@ -84,7 +84,7 @@ def train_q_learning(env,
 # -----------
 def visualize_q_table(danger_state_coordinates=[(2, 1), (0, 4)],
                       goal_coordinates=(4, 4),
-                      actions=["Up", "Down", "Right", "Left"],
+                      actions=["Up", "Down", "Right", "Left", "Jump Up", "Jump Down", "Jump Right", "Jump Left"],
                       q_values_path="q_table.npy",
                       wall_coordinates=None
                       ):
@@ -132,6 +132,11 @@ def visualize_q_table(danger_state_coordinates=[(2, 1), (0, 4)],
                 ax.text(each_danger[1] + 0.5, each_danger[0] + 0.5, f'D{danger_index}', color='red',
                         ha='center', va='center', weight='bold', fontsize=14)
 
+            # display walls
+            for coord, direct in wall_coordinates:
+                cs, rs = direct.to_coords(coord)
+                ax.plot(cs, rs, color='black', linewidth=3)
+
             ax.set_title(f'Action: {action}')
             ax.set_xlabel('Column')
             ax.set_ylabel('Row')
@@ -146,12 +151,12 @@ def visualize_q_table(danger_state_coordinates=[(2, 1), (0, 4)],
         action_arrows = {
             0: "↑",  # Up
             1: "↓",  # Down
-            2: "←",   # Left
-            3: "→",  # Right
+            2: "→",  # Right
+            3: "←",   # Left
             4: "↟",
             5: "↡",
-            6: "↞",
-            7: "↠",
+            6: "↠",
+            7: "↞",
         }
 
         _, ax = plt.subplots(figsize=(7, 6))
