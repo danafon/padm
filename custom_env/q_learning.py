@@ -70,9 +70,11 @@ def train_q_learning(env,
 
         #! Step 6: Perform epsilon decay
         #! -------
-        epsilon = max(epsilon_min, epsilon * epsilon_decay)
+        epsilon_fn = epsilon * epsilon_decay
+        # epsilon_fn = math.sin(episode)**2 / math.log(episode + 2)
+        epsilon = max(epsilon_min, epsilon_fn)
 
-        print(f"Episode {episode + 1}: Total Reward: {total_reward}")
+        # print(f"Episode {episode + 1}: Total Reward: {total_reward}")
 
         if ((episode // mem_cnt) % 2):
             lead[episode % mem_cnt] = q_table.copy()
@@ -84,6 +86,7 @@ def train_q_learning(env,
         if episode > 2*mem_cnt and np.max(np.abs(tail_avg - lead_avg)) < delta:
             break
 
+    print(f"Finished. Episode {episode + 1}")
     #! Step 7: Close the environment window
     #! -------
     env.close()
