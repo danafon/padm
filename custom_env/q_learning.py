@@ -4,6 +4,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import math
 
 
 # Function 1: Train Q-learning agent
@@ -26,8 +27,11 @@ def train_q_learning(env,
     # ---------------------
     #! Step 1: Run the algorithm for fixed number of episodes
     #! -------
+    delta = 75e-3
+    mem_cnt = 100
+    lead = np.zeros((mem_cnt, env.grid_width, env.grid_height, env.action_space.n))
+    tail = np.zeros((mem_cnt, env.grid_width, env.grid_height, env.action_space.n))
     for episode in range(no_episodes):
-        # the convergence criteria may be implemented, just don't compare two last episodes (for 100 epochs)
         state, _ = env.reset()
 
         state = tuple(state)
@@ -69,6 +73,16 @@ def train_q_learning(env,
         epsilon = max(epsilon_min, epsilon * epsilon_decay)
 
         print(f"Episode {episode + 1}: Total Reward: {total_reward}")
+
+        if ((episode // mem_cnt) % 2):
+            lead[episode % mem_cnt] = q_table.copy()
+        else:
+            tail[episode % mem_cnt] = q_table.copy()
+
+        tail_avg = np.average(tail, axis=0)
+        lead_avg = np.average(lead, axis=0)
+        if episode > 2*mem_cnt and np.max(np.abs(tail_avg - lead_avg)) < delta:
+            break
 
     #! Step 7: Close the environment window
     #! -------
