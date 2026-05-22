@@ -27,7 +27,7 @@ def train_q_learning(env,
     # ---------------------
     #! Step 1: Run the algorithm for fixed number of episodes
     #! -------
-    delta = 75e-3
+    delta = 65e-3
     mem_cnt = 100
     lead = np.zeros((mem_cnt, env.grid_width, env.grid_height, env.action_space.n))
     tail = np.zeros((mem_cnt, env.grid_width, env.grid_height, env.action_space.n))
@@ -70,8 +70,8 @@ def train_q_learning(env,
 
         #! Step 6: Perform epsilon decay
         #! -------
-        epsilon_fn = epsilon * epsilon_decay
-        # epsilon_fn = math.sin(episode)**2 / math.log(episode + 2)
+        # epsilon_fn = epsilon * epsilon_decay
+        epsilon_fn = math.sin(episode)**2 / math.log(episode + 2)
         epsilon = max(epsilon_min, epsilon_fn)
 
         # print(f"Episode {episode + 1}: Total Reward: {total_reward}")
@@ -219,7 +219,7 @@ def visualize_q_table(danger_state_coordinates,
                 1, 1,            # width, height
                 fill=False,
                 edgecolor="red",
-                linewidth=2
+                linewidth=4
             )
             ax.add_patch(rect)
         

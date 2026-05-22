@@ -18,9 +18,9 @@ In this case, it is better to use a random initialization.
 random_initialization = True  # If True, the agent will be initialized randomly in the environment
 
 learning_rate = 0.01  # Learning rate
-gamma = 0.97  # Discount factor
+gamma = 0.99  # Discount factor
 epsilon = 1.0  # Exploration rate
-epsilon_min = 0.1  # Minimum exploration rate
+epsilon_min = 0  # Minimum exploration rate
 # epsilon_decay = 0.9  # Decay rate for exploration
 epsilon_decay = 0.9999  # Decay rate for exploration
 no_episodes = 20_000  # Number of episodes
@@ -33,8 +33,8 @@ input_format, no_walls = difficulty.get_config()
 random_initialization = True
 goal_coordinates = (10, 2)
 random_initialization = True
-dangers = ((9,2), (9,3), (5,4))
-bonuses = ((1,0), (6,2))
+dangers = ((9,2), (9,3), (5,4), (9,1), (10,3), (7,0))
+bonuses = ((3,0), (6,2), (0,4))
 walls = (
     ([0,2], Direction.RIGHT),
     ([3,0], Direction.RIGHT),
@@ -50,6 +50,22 @@ walls = (
     ([6,1], Direction.RIGHT),
     ([6,2], Direction.RIGHT),
     ([6,2], Direction.DOWN),
+
+    ([0,3], Direction.DOWN),
+    ([0,3], Direction.RIGHT),
+    ([0,1], Direction.RIGHT),
+    ([1,0], Direction.DOWN),
+    ([2,0], Direction.RIGHT),
+    ([2,1], Direction.RIGHT),
+    ([2,1], Direction.DOWN),
+    ([2,2], Direction.RIGHT),
+    ([2,2], Direction.LEFT),
+    ([2,3], Direction.LEFT),
+    ([2,4], Direction.RIGHT),
+    ([8,0], Direction.DOWN),
+    ([8,1], Direction.DOWN),
+    ([8,2], Direction.DOWN),
+    ([8,3], Direction.DOWN),
 )
 
 
