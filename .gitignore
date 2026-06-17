@@ -1,3 +1,6 @@
 custom_env/engine/__pycache__
 custom_env/__pycache__
 q_table.npy
+task_1_custom_env/engine/__pycache__
+task_1_custom_env/__pycache__
+task_2_dql/__pycache__

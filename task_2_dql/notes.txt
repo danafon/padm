@@ -1,0 +1,44 @@
+Experiment 3:
+    success
+    random spawn
+    two hidden layers 64, 64
+
+    learning_rate = 0.0003
+    gamma = 0.99
+    buffer_limit = 50_000
+    batch_size = 128
+    num_episodes = 20_000
+    max_steps = 400
+    epsilon_decay = 0.9995
+    min_epsilon = 0.02
+    num_episodes = 20_000
+
+Experiment 4:
+    success
+    fixed spawn as was given
+    three hidden layers 128, 128, 64
+    
+    learning_rate = 0.0003
+    gamma = 0.99
+    buffer_limit = 50_000
+    batch_size = 128
+    num_episodes = 20_000
+    max_steps = 400
+    epsilon_decay = 0.9995
+    min_epsilon = 0.02
+    num_episodes = 20_000
+
+Experiment 5:
+    success
+    random spawn
+    three hidden layers 128, 128, 64
+    
+    learning_rate = 0.0003
+    gamma = 0.98
+    buffer_limit = 50_000
+    batch_size = 128
+    num_episodes = 20_000
+    max_steps = 400
+    epsilon_decay = 0.9995
+    min_epsilon = 0.02
+    num_episodes = 20_000
