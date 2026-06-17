@@ -7,9 +7,9 @@ from engine.Config import InputMode, Difficulty
 
 # User definitions:
 # -----------------
-train = True
+train = False
 visualize_results = True
-render = False
+render = True
 
 """
 NOTE: Sometimes a fixed initializtion might push the agent to a local minimum.
