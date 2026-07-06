@@ -99,10 +99,10 @@ if train:
 if visualize_results:
     # Visualize the Q-table:
     # ----------------------
-    path = result_path if train else Path("experiments" / experiment_to_visualize)
+    path = result_path.parent if train else Path("experiments") / f"experiment_{experiment_to_visualize}"
     visualize_q_table(danger_state_coordinates=dangers,
                       goal_coordinates=goal_coordinates,
                       wall_coordinates=walls,
                       bonus_coordinates=bonuses,
-                      q_values_path=result_path,
+                      q_values_path=path,
                       save_res=train)

@@ -134,7 +134,7 @@ def visualize_q_table(danger_state_coordinates,
     # Load the Q-table:
     # -----------------
     try:
-        q_table = np.load(q_values_path)
+        q_table = np.load(q_values_path / "q_table.npy")
 
         # Convert coordinates to tuples to make indexing and iteration consistent:
         # -----------------------------------------------------------------------
@@ -195,7 +195,7 @@ def visualize_q_table(danger_state_coordinates,
 
         plt.tight_layout()
         if save_res:
-            plt.savefig(Path(q_values_path).parent / "q_table.png")
+            plt.savefig(Path(q_values_path) / "q_table.png")
         plt.show()
 
         # Visualize the learned greedy policy:
@@ -254,7 +254,7 @@ def visualize_q_table(danger_state_coordinates,
 
         plt.tight_layout()
         if save_res:
-            plt.savefig(Path(q_values_path).parent / "policy.png")
+            plt.savefig(Path(q_values_path) / "policy.png")
         plt.show()
 
     except FileNotFoundError:
