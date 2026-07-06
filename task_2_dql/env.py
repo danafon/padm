@@ -63,8 +63,8 @@ class ContinuousMazeEnv(gym.Env):
     def reset(self, *, seed=None, options=None):  # gymnasium signature
         super().reset(seed=seed)
 
-        # self.agent_pos = np.array(random.choice([[0.1, 0.5]]), dtype=np.float32)
-        self.agent_pos = np.array([random.uniform(0,1),random.uniform(0,1)], dtype=np.float32)
+        self.agent_pos = np.array(random.choice([[0.1, 0.5]]), dtype=np.float32)
+        # self.agent_pos = np.array([random.uniform(0,1),random.uniform(0,1)], dtype=np.float32)
 
         observation = self.agent_pos.copy()
         info = {}

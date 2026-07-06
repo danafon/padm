@@ -23,7 +23,7 @@ render = True #do not turn on for training
 dim_actions = 4
 dim_states = 2
 
-exp_no = 5
+exp_no = 6
 
 # Hyperparameters:
 # ----------------
