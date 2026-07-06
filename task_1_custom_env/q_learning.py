@@ -5,6 +5,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import math
+from pathlib import Path
+import json
 
 
 # Function 1: Train Q-learning agent
@@ -16,8 +18,8 @@ def train_q_learning(env,
                      epsilon_decay,
                      alpha,
                      gamma,
-                     render,
-                     q_table_save_path="q_table.npy"):
+                     render
+                     ):
 
     # Initialize the Q-table:
     # -----------------------
@@ -27,7 +29,7 @@ def train_q_learning(env,
     # ---------------------
     #! Step 1: Run the algorithm for fixed number of episodes
     #! -------
-    delta = 65e-3
+    delta = 65e-6
     mem_cnt = 100
     lead = np.zeros((mem_cnt, env.grid_width, env.grid_height, env.action_space.n))
     tail = np.zeros((mem_cnt, env.grid_width, env.grid_height, env.action_space.n))
@@ -70,11 +72,11 @@ def train_q_learning(env,
 
         #! Step 6: Perform epsilon decay
         #! -------
-        # epsilon_fn = epsilon * epsilon_decay
-        epsilon_fn = math.sin(episode)**2 / math.log(episode + 2)
+        epsilon_fn = epsilon * epsilon_decay
+        # epsilon_fn = math.sin(episode)**2 / math.log(episode + 2)
         epsilon = max(epsilon_min, epsilon_fn)
 
-        # print(f"Episode {episode + 1}: Total Reward: {total_reward}")
+        print(f"Episode {episode + 1}: Total Reward: {total_reward}")
 
         if ((episode // mem_cnt) % 2):
             lead[episode % mem_cnt] = q_table.copy()
@@ -94,18 +96,39 @@ def train_q_learning(env,
 
     #! Step 8: Save the trained Q-table
     #! -------
-    np.save(q_table_save_path, q_table)
+    base = Path("experiments")
+    base.mkdir(exist_ok=True)
+    i = 1
+    while (base / f"experiment_{i}").exists():
+        i += 1
+
+    exp_dir = base / f"experiment_{i}"
+    exp_dir.mkdir()
+    np.save(exp_dir / "q_table.npy", q_table)
     print("Saved the Q-table.")
 
+    params = {
+        "no_episodes": no_episodes,
+        "epsilon_min": epsilon_min,
+        "epsilon_decay": epsilon_decay,
+        "alpha": alpha,
+        "gamma": gamma,
+    }
+
+    with open(exp_dir / "params.json", "w") as f:
+        json.dump(params, f, indent=4)
+
+    return exp_dir / "q_table.npy"
 
 # Function 2: Visualize the Q-table
 # -----------
 def visualize_q_table(danger_state_coordinates,
                       goal_coordinates,
+                      q_values_path,
                       actions=["Up", "Down", "Right", "Left", "Jump Up", "Jump Down", "Jump Right", "Jump Left"],
-                      q_values_path="q_table.npy",
                       wall_coordinates=None,
                       bonus_coordinates=(),
+                      save_res=False,
                       ):
 
     # Load the Q-table:
@@ -171,6 +194,8 @@ def visualize_q_table(danger_state_coordinates,
             ax.set_ylabel('Row')
 
         plt.tight_layout()
+        if save_res:
+            plt.savefig(Path(q_values_path).parent / "q_table.png")
         plt.show()
 
         # Visualize the learned greedy policy:
@@ -228,6 +253,8 @@ def visualize_q_table(danger_state_coordinates,
         ax.set_ylabel('Row')
 
         plt.tight_layout()
+        if save_res:
+            plt.savefig(Path(q_values_path).parent / "policy.png")
         plt.show()
 
     except FileNotFoundError:

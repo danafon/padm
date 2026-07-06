@@ -4,26 +4,27 @@ from engine.MyEnv import initiate_env
 from q_learning import train_q_learning, visualize_q_table
 from engine.Direction import Direction
 from engine.Config import InputMode, Difficulty
+from pathlib import Path
 
 # User definitions:
 # -----------------
-train = False
+train = True
 visualize_results = True
-render = True
+render = False
 
+experiment_to_visualize = 1
 """
 NOTE: Sometimes a fixed initializtion might push the agent to a local minimum.
 In this case, it is better to use a random initialization.  
 """
 random_initialization = True  # If True, the agent will be initialized randomly in the environment
 
-learning_rate = 0.01  # Learning rate
+learning_rate = [1e-2, 3e-4, 1e-1][0]  # Learning rate (alpha)
 gamma = 0.99  # Discount factor
 epsilon = 1.0  # Exploration rate
-epsilon_min = 0  # Minimum exploration rate
-# epsilon_decay = 0.9  # Decay rate for exploration
-epsilon_decay = 0.9999  # Decay rate for exploration
-no_episodes = 20_000  # Number of episodes
+epsilon_min = 0.1  # Minimum exploration rate
+epsilon_decay = 0.999  # Decay rate for exploration
+no_episodes = 10_000  # Number of episodes
 
 input_mode = InputMode.MANUAL
 difficulty = Difficulty.MEDIUM
@@ -86,7 +87,7 @@ if train:
 
     # Train a Q-learning agent:
     # -------------------------
-    train_q_learning(env=env,
+    result_path = train_q_learning(env=env,
                      no_episodes=no_episodes,
                      epsilon=epsilon,
                      epsilon_min=epsilon_min,
@@ -98,8 +99,10 @@ if train:
 if visualize_results:
     # Visualize the Q-table:
     # ----------------------
+    path = result_path if train else Path("experiments" / experiment_to_visualize)
     visualize_q_table(danger_state_coordinates=dangers,
                       goal_coordinates=goal_coordinates,
                       wall_coordinates=walls,
                       bonus_coordinates=bonuses,
-                      q_values_path="q_table.npy")
+                      q_values_path=result_path,
+                      save_res=train)
