@@ -60,8 +60,12 @@ def train_q_learning(env,
 
             #! Step 4: Update the Q-values using the Q-value update rule
             #! -------
-            q_table[state][action] = q_table[state][action] + alpha * \
-                (reward + gamma * np.max(q_table[next_state]) - q_table[state][action])
+            if done:
+                target = reward
+            else:
+                target = reward + gamma * np.max(q_table[next_state])
+
+            q_table[state][action] = q_table[state][action] + alpha * (target - q_table[state][action])
 
             state = next_state
 
