@@ -30,8 +30,8 @@ if __name__=="__main__":
     random_initialization = True
     goal_coordinates = (10, 2)
     random_initialization = True
-    dangers = ((9,2), (9,3), (5,4))
-    bonuses = ((1,0), (6,2))
+    dangers = ((9,2), (9,3), (5,4), (9,1), (10,3), (7,0))
+    bonuses = ((3,0), (6,2), (0,4))
     walls = (
         ([0,2], Direction.RIGHT),
         ([3,0], Direction.RIGHT),
@@ -47,6 +47,22 @@ if __name__=="__main__":
         ([6,1], Direction.RIGHT),
         ([6,2], Direction.RIGHT),
         ([6,2], Direction.DOWN),
+
+        ([0,3], Direction.DOWN),
+        ([0,3], Direction.RIGHT),
+        ([0,1], Direction.RIGHT),
+        ([1,0], Direction.DOWN),
+        ([2,0], Direction.RIGHT),
+        ([2,1], Direction.RIGHT),
+        ([2,1], Direction.DOWN),
+        ([2,2], Direction.RIGHT),
+        ([2,2], Direction.LEFT),
+        ([2,3], Direction.LEFT),
+        ([2,4], Direction.RIGHT),
+        ([8,0], Direction.DOWN),
+        ([8,1], Direction.DOWN),
+        ([8,2], Direction.DOWN),
+        ([8,3], Direction.DOWN),
     )
 
     for _ in range(num_epochs):
